@@ -17,12 +17,14 @@ public class CalculatorConfiguration {
         var map = new HashMap<CalculatorType, MedicalCalculatorHandler>();
 
         for (var handler : handlers) {
-            map.compute(handler.getCalculatorType(), (_, medicalCalculatorHandler) -> {
+            map.compute(handler.getCalculatorType(), (calculatorType, medicalCalculatorHandler) -> {
                 if (medicalCalculatorHandler == null) medicalCalculatorHandler = handler;
 
                 return medicalCalculatorHandler;
             });
         }
+
         return map;
     }
 }
+

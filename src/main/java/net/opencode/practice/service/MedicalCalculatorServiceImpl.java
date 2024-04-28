@@ -6,6 +6,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import net.opencode.practice.component.handler.calculator.MedicalCalculatorHandler;
 import net.opencode.practice.data.CalculatorType;
+import net.opencode.practice.model.AbstractModel;
+import net.opencode.practice.model.ResultInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,9 +21,9 @@ public class MedicalCalculatorServiceImpl implements MedicalCalculatorService {
     Map<CalculatorType, MedicalCalculatorHandler> calculatorHandlers;
 
     @Override
-    public void getModelFromDataObject(CalculatorType calculatorType) {
-        var handler = calculatorHandlers.get(calculatorType);
+    public ResultInfo getResultFromCalculator(CalculatorType calculatorType, AbstractModel model) {
+        var handler = this.calculatorHandlers.get(calculatorType);
 
-        log.info("calculatorHadler - " + handler.toString());
+        return handler.calculate(model);
     }
 }
