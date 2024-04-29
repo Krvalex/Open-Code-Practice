@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/imt")
 @RestController
 @Validated
-public class CalculatorController {
+public class ImtCalculatorController {
 
     MedicalCalculatorService medicalCalculatorService;
 
