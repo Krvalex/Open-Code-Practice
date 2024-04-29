@@ -17,13 +17,13 @@ public class MapCalculator implements MedicalCalculatorHandler {
         var model = (MapModel) modelData;
         var dad = (double) model.getDad();
         var sad = (double) model.getSad();
-
-        if (0.333 * sad + 0.666 * dad > 110) {
-            return new ResultInfo("Гипертензия");
-        } else if (0.333 * sad + 0.666 * dad < 70) {
-            return new ResultInfo("Гипотензия. Возможна гипоксия и ишемия тканей");
+        double result = 0.333 * sad + 0.666 * dad;
+        if (result > 110) {
+            return new ResultInfo(Math.round(result) + " Гипертензия");
+        } else if (result < 70) {
+            return new ResultInfo(Math.round(result) + " Гипотензия. Возможна гипоксия и ишемия тканей");
         } else {
-            return new ResultInfo("Норма");
+            return new ResultInfo(Math.round(result) + " Норма");
         }
     }
 

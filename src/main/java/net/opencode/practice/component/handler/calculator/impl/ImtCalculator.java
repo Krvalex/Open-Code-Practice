@@ -17,8 +17,16 @@ public class ImtCalculator implements MedicalCalculatorHandler {
     public ResultInfo calculate(AbstractModel modelData) {
         var model = (ImtModel) modelData;
         var height = (double) model.getH() / 100;
-
-        return new ResultInfo((double) model.getM() / (height * height));
+        double result = (double) Math.round((double) model.getM() * 10 / (height * height)) / 10;
+        if (result < 16) return new ResultInfo(result + " Выраженный дефицит массы тела");
+        else if ((result > 16) && (result < 18.5))
+            return new ResultInfo(result + " Недостаточная (дефицит) масса тела");
+        else if ((result > 18.5) && (result < 25)) return new ResultInfo(result + " Норма");
+        else if ((result > 25) && (result < 30))
+            return new ResultInfo(result + " Избыточная масса тела (предожирение)");
+        else if ((result > 30) && (result < 35)) return new ResultInfo(result + " Ожирение первой степени");
+        else if ((result > 35) && (result < 40)) return new ResultInfo(result + " Ожирение второй степени");
+        else return new ResultInfo(result + " Ожирение третьей степени (морбидное)");
     }
 
     @Override
