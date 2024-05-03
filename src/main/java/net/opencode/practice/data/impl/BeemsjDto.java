@@ -1,13 +1,13 @@
-package net.opencode.practice.model.impl;
+package net.opencode.practice.data.impl;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import net.opencode.practice.model.AbstractModel;
+import net.opencode.practice.data.AbstractDto;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
-public class BeemsjModel extends AbstractModel {
+public class BeemsjDto extends AbstractDto {
 
     boolean sex;
     boolean units;
@@ -16,7 +16,7 @@ public class BeemsjModel extends AbstractModel {
     double weight;
     double k;
 
-    public BeemsjModel(boolean sex, boolean units, double age, double height, double weight, double k) {
+    public BeemsjDto(boolean sex, boolean units, double age, double height, double weight, double k) {
         this.sex = sex;
         this.units = units;
         this.age = age;
