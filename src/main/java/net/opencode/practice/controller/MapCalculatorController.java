@@ -1,14 +1,23 @@
 package net.opencode.practice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import net.opencode.practice.data.AbstractDto;
 import net.opencode.practice.data.CalculatorInfo;
 import net.opencode.practice.data.CalculatorType;
 import net.opencode.practice.data.ResultInfo;
+import net.opencode.practice.data.exception.ErrorMessage;
 import net.opencode.practice.data.impl.MapDto;
 import net.opencode.practice.service.MedicalCalculatorService;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,22 +27,40 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/map")
 @RestController
-@Validated
 public class MapCalculatorController {
 
-    Map<CalculatorType, MedicalCalculatorService> medicalCalculatorServices;
+    Map<CalculatorType, MedicalCalculatorService<?>> medicalCalculatorServices;
 
-    @GetMapping("info")
-    public CalculatorInfo get() {
-        return new CalculatorInfo("""
+    @Operation(summary = "Gets calculator information", description = "Returns Map calculator information", tags = "info")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Successful operation",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CalculatorInfo.class)))
+    })
+    @GetMapping(value = "/info", produces = {"application/json", "application/xml"})
+    public ResponseEntity<CalculatorInfo> get() {
+        return ResponseEntity.ok(new CalculatorInfo("""
                 Калькулятор расчета среднего артериального давления по данным систолического и диастолического АД.
                 Формула: Среднее артериальное давление (САД) = 1/3 САД + 2/3 * ДАД.
-                """);
+                """));
     }
 
-    @PostMapping("result")
-    public ResultInfo result(@Validated @RequestBody MapDto dto) {
-        var service = this.medicalCalculatorServices.get(CalculatorType.MAP);
-        return service.calculate(dto);
+    @Operation(summary = "Calculate result from your data",
+            description = "Calculate Map result from your data",
+            tags = "calculate")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Successful operation",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultInfo.class))),
+            @ApiResponse(responseCode = "422",
+                    description = "Validation exception",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))}
+    )
+    @SuppressWarnings("unchecked")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/result")
+    public ResponseEntity<ResultInfo> result(@Valid @RequestBody MapDto dto) {
+        var service = (MedicalCalculatorService<AbstractDto>) this.medicalCalculatorServices.get(CalculatorType.MAP);
+        return new ResponseEntity<>(service.calculate(dto), HttpStatus.OK);
     }
 }
